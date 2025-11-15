@@ -27,7 +27,7 @@ const skillCategories = [
   },
   {
     title: 'Development Tools & Frameworks',
-    skills: ['GitHub', 'NPM', 'Yarn', 'GitHub Copilot'],
+    skills: ['GitHub', 'NPM', 'Yarn'],
     color: 'from-purple-500 to-pink-500',
   },
   {
@@ -94,7 +94,7 @@ export default function Skills() {
                     {skill}
                   </motion.span>
                 ))}
-              </div>
+              </div>  
             </motion.div>
           ))}
         </div>
