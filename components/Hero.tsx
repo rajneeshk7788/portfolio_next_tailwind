@@ -24,7 +24,21 @@ export default function Hero() {
       id="home"
       className="min-h-screen flex items-center justify-center relative overflow-hidden"
     >
-      {/* Animated Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute top-1/2 left-1 -translate-x-1 -translate-y-1 w-[200%] h-[200%] opacity-[0.05]"
+          style={{
+            background: "repeating-conic-gradient(from 0deg at 50% 10%, transparent 0deg 10deg, white 10deg 20deg)",
+          }}
+          animate={{ rotate: 180 }}
+          transition={{
+            duration: 80,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+        />
+      </div>
+
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
           className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20"

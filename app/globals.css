@@ -31,6 +31,15 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 
 /* Custom scrollbar */
@@ -51,3 +60,22 @@ body {
   background: #4a4a4a;
 }
 
+/* Animated gradient text */
+@keyframes gradient-xy {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-xy 6s ease infinite;
+}
