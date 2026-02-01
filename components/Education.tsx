@@ -14,13 +14,13 @@ const education = [
   },
   {
     degree: 'Master of Science in Computer Science',
-    institution: 'Awadesh Pratap Singh University',
+    institution: 'Awadhesh Pratap Singh University',
     location: 'Rewa, Madhya Pradesh',
     period: 'Jul 2019 - Jun 2021',
   },
   {
     degree: 'Bachelor of Science in Computer Science',
-    institution: 'Awadesh Pratap Singh University',
+    institution: 'Awadhesh Pratap Singh University',
     location: 'Rewa, Madhya Pradesh',
     period: 'Jul 2016 - Jun 2019',
   },
