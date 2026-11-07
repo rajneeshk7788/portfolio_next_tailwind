@@ -30,31 +30,57 @@
 
 @layer components {
   .wrap {
-    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+    @apply mx-auto w-full max-w-[76rem] px-4 sm:px-6 lg:px-8;
   }
 
   .section {
-    @apply py-20 lg:py-28;
+    @apply py-16 lg:py-32;
+  }
+
+  .eyebrow {
+    @apply flex items-center gap-3 font-mono text-xs uppercase tracking-[0.2em];
+  }
+
+  .eyebrow::before {
+    content: '';
+    @apply h-px w-8 bg-current;
+  }
+
+  .label {
+    @apply font-mono text-xs uppercase tracking-widest text-muted;
   }
 
   .card {
     @apply rounded-2xl border border-line bg-surface;
+    box-shadow: 0 1px 0 0 rgba(236, 233, 226, 0.05) inset;
+  }
+
+  .card-hover {
+    @apply transition-[border-color,transform] duration-300 hover:-translate-y-0.5 hover:border-brass/40 motion-reduce:hover:translate-y-0;
   }
 
   .chip {
     @apply inline-flex items-center rounded-md border border-line bg-raised px-2.5 py-1 font-mono text-xs text-paper/85;
   }
 
+  .chip-core {
+    @apply border-brass/40 bg-brass/10 text-brass;
+  }
+
+  .icon-tile {
+    @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brass/25 bg-brass/10 text-brass;
+  }
+
   .btn {
-    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium transition-colors duration-200;
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium transition-all duration-200;
   }
 
   .btn-primary {
-    @apply btn bg-brass text-ink hover:bg-[#F2C57E];
+    @apply btn bg-gradient-to-b from-[#F2CB8A] to-brass text-ink shadow-glow hover:brightness-110;
   }
 
   .btn-secondary {
-    @apply btn border border-line text-paper hover:border-paper/40 hover:bg-raised;
+    @apply btn border border-line bg-paper/[0.03] text-paper hover:border-paper/40 hover:bg-raised;
   }
 
   .icon-link {
@@ -66,36 +92,89 @@
   }
 }
 
+.text-gradient {
+  background: linear-gradient(100deg, #f6d9a6 0%, #e8b563 55%, #7fd1b9 120%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
 /* Faint blueprint grid behind the hero, faded out toward the edges. */
 .hero-grid {
   background-image:
     linear-gradient(to right, rgba(236, 233, 226, 0.05) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(236, 233, 226, 0.05) 1px, transparent 1px);
   background-size: 64px 64px;
-  mask-image: radial-gradient(ellipse 70% 70% at 60% 30%, black, transparent);
-  -webkit-mask-image: radial-gradient(ellipse 70% 70% at 60% 30%, black, transparent);
+  mask-image: radial-gradient(ellipse 75% 70% at 60% 25%, black, transparent);
+  -webkit-mask-image: radial-gradient(ellipse 75% 70% at 60% 25%, black, transparent);
 }
 
-/* Collapsible panel that stays in the DOM so its content remains crawlable. */
-.collapse-panel {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+/* Hero entrance. Pure CSS, so content paints before JavaScript loads. */
+.rise {
+  animation: rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--d, 0ms);
 }
 
-.collapse-panel[data-open='true'] {
-  grid-template-rows: 1fr;
+.code-line {
+  animation: rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--d, 0ms);
 }
 
-.collapse-panel > div {
-  min-height: 0;
-  overflow: hidden;
-  visibility: hidden;
-  transition: visibility 0.35s;
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
 }
 
-.collapse-panel[data-open='true'] > div {
-  visibility: visible;
+.caret {
+  animation: caret 1.1s steps(1) infinite;
+}
+
+@keyframes caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Native project detail dialog. */
+.project-dialog::backdrop {
+  background: rgba(5, 6, 7, 0.78);
+  backdrop-filter: blur(4px);
+}
+
+.project-dialog[open] {
+  animation: rise 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Endless logo-style strip. The content is doubled, so -50% loops seamlessly. */
+.marquee {
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+.marquee-track {
+  animation: marquee 45s linear infinite;
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.pulse-dot {
+  animation: pulse-dot 2.4s ease-out infinite;
+}
+
+@keyframes pulse-dot {
+  0% {
+    box-shadow: 0 0 0 0 rgba(127, 209, 185, 0.55);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 8px rgba(127, 209, 185, 0);
+  }
 }
 
 /* Cursor-following glow on interactive project cards. */
@@ -112,8 +191,8 @@
   opacity: 0;
   transition: opacity 0.25s;
   background: radial-gradient(
-    420px circle at var(--x, 50%) var(--y, 0%),
-    rgba(232, 181, 99, 0.08),
+    520px circle at var(--x, 50%) var(--y, 0%),
+    rgba(232, 181, 99, 0.07),
     transparent 70%
   );
 }
@@ -123,9 +202,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .collapse-panel,
-  .collapse-panel > div {
-    transition: none;
+  .marquee-track,
+  .pulse-dot,
+  .rise,
+  .code-line,
+  .caret,
+  .project-dialog[open] {
+    animation: none;
   }
 }
 

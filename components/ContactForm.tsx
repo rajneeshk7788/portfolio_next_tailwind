@@ -95,7 +95,7 @@ export default function ContactForm() {
   const isSending = status === 'sending';
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="card space-y-5 p-5 sm:p-7">
+    <form onSubmit={handleSubmit} noValidate className="relative space-y-5 rounded-2xl border border-line bg-ink/60 p-5 sm:p-7">
       <div className="grid gap-5 sm:grid-cols-2">
         <Field label="Name" name="name" error={errors.name}>
           <input
@@ -130,7 +130,7 @@ export default function ContactForm() {
         <textarea
           id="message"
           name="message"
-          rows={5}
+          rows={9}
           value={values.message}
           onChange={(event) => update('message', event.target.value)}
           aria-invalid={Boolean(errors.message)}

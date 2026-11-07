@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useScroll } from 'framer-motion';
 import { Download, Menu, X } from 'lucide-react';
 import { navItems, profile } from '@/lib/content';
 
@@ -9,6 +9,7 @@ export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeId, setActiveId] = useState('');
+  const { scrollYProgress } = useScroll();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 24);
@@ -76,8 +77,8 @@ export default function Navigation() {
                 <a
                   href={`#${item.id}`}
                   aria-current={isActive ? 'true' : undefined}
-                  className={`rounded-md px-3 py-2 text-sm transition-colors duration-200 ${
-                    isActive ? 'text-brass' : 'text-muted hover:text-paper'
+                  className={`rounded-full px-3.5 py-2 text-sm transition-colors duration-200 ${
+                    isActive ? 'bg-brass/10 text-brass' : 'text-muted hover:text-paper'
                   }`}
                 >
                   {item.name}
@@ -140,6 +141,12 @@ export default function Navigation() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <motion.div
+        aria-hidden="true"
+        className="absolute inset-x-0 -bottom-px h-px origin-left bg-brass"
+        style={{ scaleX: scrollYProgress }}
+      />
     </header>
   );
 }
