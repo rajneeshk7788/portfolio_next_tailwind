@@ -1,81 +1,53 @@
-# Portfolio Website
+# Rajneesh Kushwaha: Portfolio
 
-A modern, animated portfolio website built with Next.js 14, TypeScript, Tailwind CSS, and Framer Motion.
+Personal portfolio built with Next.js 14 (App Router), TypeScript, Tailwind CSS, Framer Motion, and Lucide React. It is exported as a static site and hosted on Firebase Hosting.
 
-## Features
+## Getting started
 
-- ✨ Beautiful animations using Framer Motion
-- 🎨 Modern UI with Tailwind CSS
-- 📱 Fully responsive design
-- ⚡ Built with Next.js 14 App Router
-- 🚀 Optimized for performance
-- 🌙 Dark theme with gradient accents
+Requires Node.js 18 or later.
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+ installed
-- npm or yarn package manager
-
-### Installation
-
-1. Install dependencies:
 ```bash
 npm install
-# or
-yarn install
-```
-
-2. Run the development server:
-```bash
 npm run dev
-# or
-yarn dev
 ```
 
-3. Open [http://localhost:3000](http://localhost:3000) in your browser to see the portfolio.
+Open [http://localhost:3000](http://localhost:3000).
 
-## Project Structure
+## Updating content
 
-```
-portfolio_with_next/
-├── app/
-│   ├── globals.css      # Global styles
-│   ├── layout.tsx       # Root layout
-│   └── page.tsx         # Home page
-├── components/
-│   ├── Navigation.tsx   # Navigation bar
-│   ├── Hero.tsx         # Hero section
-│   ├── About.tsx        # About section
-│   ├── Skills.tsx       # Skills section
-│   ├── Experience.tsx   # Experience section
-│   ├── Projects.tsx     # Projects section
-│   ├── Education.tsx    # Education section
-│   └── Contact.tsx      # Contact section
-└── ...
-```
+All copy lives in [`lib/content.ts`](lib/content.ts). Update it whenever the resume changes. The downloadable resume is `public/Rajneesh_Kushwaha_Full_Stack_Developer_Resume.pdf`.
 
-## Customization
+## Environment variables
 
-You can easily customize the portfolio by editing the component files in the `components/` directory. Each section contains your information and can be updated as needed.
+Copy `.env.example` to `.env.local`.
 
-## Build for Production
+| Variable | Purpose |
+| --- | --- |
+| `NEXT_PUBLIC_SITE_URL` | Public site URL, used for canonical links, Open Graph, and the sitemap. |
+| `NEXT_PUBLIC_CONTACT_FORM_ENDPOINT` | Form service URL (for example Formspree) that delivers contact form messages by email. |
+
+The site is static, so it cannot send email itself. If no form endpoint is set, the contact form opens the visitor's email app with the message filled in.
+
+## Scripts
+
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start the development server. |
+| `npm run lint` | Run ESLint. |
+| `npm run build` | Create the static site in `out/`. |
+
+## Deploy
 
 ```bash
 npm run build
-npm start
+firebase deploy --only hosting
 ```
 
-## Technologies Used
+## Project structure
 
-- **Next.js 14** - React framework with App Router
-- **TypeScript** - Type safety
-- **Tailwind CSS** - Utility-first CSS framework
-- **Framer Motion** - Animation library
-- **Lucide React** - Icon library
-
-## License
-
-This project is open source and available for personal use.
-
+```
+app/          Layout, page, global styles, SEO routes (robots, sitemap, Open Graph image)
+components/   One component per page section, plus shared UI in components/ui
+lib/          Portfolio content
+public/       Resume PDF and static assets
+```

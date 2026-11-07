@@ -2,80 +2,146 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+@layer base {
+  html {
+    color-scheme: dark;
+    scroll-padding-top: 5rem;
   }
 
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
+  body {
+    @apply bg-ink font-sans text-paper antialiased;
+    overflow-x: clip;
   }
 
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+  ::selection {
+    @apply bg-brass text-ink;
+  }
+
+  :focus-visible {
+    @apply rounded-sm outline outline-2 outline-offset-2 outline-brass;
   }
 }
 
-/* Custom scrollbar */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  .wrap {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .section {
+    @apply py-20 lg:py-28;
+  }
+
+  .card {
+    @apply rounded-2xl border border-line bg-surface;
+  }
+
+  .chip {
+    @apply inline-flex items-center rounded-md border border-line bg-raised px-2.5 py-1 font-mono text-xs text-paper/85;
+  }
+
+  .btn {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium transition-colors duration-200;
+  }
+
+  .btn-primary {
+    @apply btn bg-brass text-ink hover:bg-[#F2C57E];
+  }
+
+  .btn-secondary {
+    @apply btn border border-line text-paper hover:border-paper/40 hover:bg-raised;
+  }
+
+  .icon-link {
+    @apply inline-flex h-11 w-11 items-center justify-center rounded-lg border border-line text-muted transition-colors duration-200 hover:border-paper/40 hover:text-paper;
+  }
+
+  .field {
+    @apply w-full rounded-lg border border-line bg-ink px-3.5 py-2.5 text-base text-paper transition-colors duration-200 placeholder:text-muted/70 hover:border-paper/25 focus:border-brass focus:outline-none sm:text-sm;
+  }
+}
+
+/* Faint blueprint grid behind the hero, faded out toward the edges. */
+.hero-grid {
+  background-image:
+    linear-gradient(to right, rgba(236, 233, 226, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(236, 233, 226, 0.05) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 70% 70% at 60% 30%, black, transparent);
+  -webkit-mask-image: radial-gradient(ellipse 70% 70% at 60% 30%, black, transparent);
+}
+
+/* Collapsible panel that stays in the DOM so its content remains crawlable. */
+.collapse-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.collapse-panel[data-open='true'] {
+  grid-template-rows: 1fr;
+}
+
+.collapse-panel > div {
+  min-height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  transition: visibility 0.35s;
+}
+
+.collapse-panel[data-open='true'] > div {
+  visibility: visible;
+}
+
+/* Cursor-following glow on interactive project cards. */
+.spotlight {
+  position: relative;
+}
+
+.spotlight::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s;
+  background: radial-gradient(
+    420px circle at var(--x, 50%) var(--y, 0%),
+    rgba(232, 181, 99, 0.08),
+    transparent 70%
+  );
+}
+
+.spotlight:hover::before {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .collapse-panel,
+  .collapse-panel > div {
+    transition: none;
+  }
+}
+
 ::-webkit-scrollbar {
   width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #1a1a1a;
+  background: #0b0c0e;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #3a3a3a;
+  background: #2a2d32;
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #4a4a4a;
-}
-
-/* Animated gradient text */
-@keyframes gradient-xy {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-.animate-gradient {
-  background-size: 200% 200%;
-  animation: gradient-xy 6s ease infinite;
+  background: #3a3e44;
 }

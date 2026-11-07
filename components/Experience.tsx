@@ -1,102 +1,85 @@
-'use client';
+import { Calendar, MapPin } from 'lucide-react';
+import { experience, projects } from '@/lib/content';
+import ProjectTimeline, { type TimelineRow } from './ProjectTimeline';
+import Reveal from './ui/Reveal';
+import SectionHeading from './ui/SectionHeading';
 
-import { motion } from 'framer-motion';
-import { useInView } from 'framer-motion';
-import { useRef } from 'react';
-import { Calendar, MapPin, Briefcase } from 'lucide-react';
+const toMonths = (date: Date) => date.getFullYear() * 12 + date.getMonth();
+const parseMonth = (value: string) => {
+  const [year, month] = value.split('-').map(Number);
+  return year * 12 + (month - 1);
+};
 
-const experiences = [
-  {
-    company: 'NextLoop Technologies LLP',
-    role: 'Software Engineer',
-    location: 'Indore, Madhya Pradesh',
-    period: 'Jul 2022 - present',
-    responsibilities: [
-      'Developed and maintained high-performance, responsive web applications to enhance user experience',
-      'Collaborated with designers, backend developers, and product managers to implement and optimize features',
-      'Refactored and optimized code for better performance, scalability, and maintainability',
-      'Conducted code reviews to ensure quality and best practices',
-      'Built reusable UI components and managed state efficiently for a seamless user experience',
-      'Contributed to backend development by working with RESTful APIs, basic server-side logic, and database integration',
-    ],
-  },
-];
+function buildTimeline() {
+  const dated = projects.filter((project) => project.start);
+  const end = toMonths(new Date()) + 1;
+  const start = Math.min(...dated.map((project) => parseMonth(project.start as string)));
+  const toPercent = (month: number) => ((month - start) / (end - start)) * 100;
+
+  const rows: TimelineRow[] = dated.map((project) => {
+    const from = parseMonth(project.start as string);
+    const to = project.end ? parseMonth(project.end) + 1 : end;
+    return {
+      title: project.title,
+      period: project.period,
+      left: toPercent(from),
+      width: toPercent(to) - toPercent(from),
+      ongoing: !project.end,
+    };
+  });
+
+  const ticks: { year: number; left: number }[] = [];
+  for (let year = Math.ceil(start / 12); year * 12 < end; year += 1) {
+    ticks.push({ year, left: toPercent(year * 12) });
+  }
+
+  return { rows, ticks };
+}
 
 export default function Experience() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-100px' });
+  const { rows, ticks } = buildTimeline();
 
   return (
-    <section
-      id="experience"
-      ref={ref}
-      className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-900 to-black"
-    >
-      <div className="max-w-4xl mx-auto">
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-4xl sm:text-5xl font-bold mb-12 text-center"
-        >
-          <span className="bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent">
-            Professional Experience
-          </span>
-        </motion.h2>
+    <section id="experience" className="section border-t border-line">
+      <div className="wrap">
+        <SectionHeading eyebrow="Professional experience" title="Where I build" />
 
-        <div className="space-y-8">
-          {experiences.map((exp, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, x: -30 }}
-              animate={isInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.6, delay: index * 0.2 }}
-              className="relative"
-            >
-              <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-700 hover:border-gray-600 transition-all hover:shadow-xl hover:shadow-blue-500/10">
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4">
-                  <div>
-                    <h3 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
-                      <Briefcase className="text-blue-400" size={24} />
-                      {exp.role}
-                    </h3>
-                    <p className="text-xl text-blue-400 font-semibold mb-2">
-                      {exp.company}
-                    </p>
-                  </div>
-                </div>
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-16">
+          <Reveal className="lg:sticky lg:top-24 lg:self-start">
+            <p className="font-display text-2xl font-medium">{experience.company}</p>
+            <p className="mt-1 text-brass">{experience.role}</p>
+            <div className="mt-4 space-y-2 text-sm text-muted">
+              <p className="flex items-center gap-2">
+                <Calendar size={15} aria-hidden="true" />
+                {experience.period}
+              </p>
+              <p className="flex items-center gap-2">
+                <MapPin size={15} aria-hidden="true" />
+                {experience.location}
+              </p>
+            </div>
+          </Reveal>
 
-                <div className="flex flex-wrap gap-4 mb-6 text-gray-400">
-                  <div className="flex items-center gap-2">
-                    <Calendar size={16} />
-                    <span>{exp.period}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <MapPin size={16} />
-                    <span>{exp.location}</span>
-                  </div>
-                </div>
-
-                <ul className="space-y-3">
-                  {exp.responsibilities.map((responsibility, idx) => (
-                    <motion.li
-                      key={idx}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={isInView ? { opacity: 1, x: 0 } : {}}
-                      transition={{ duration: 0.4, delay: index * 0.2 + idx * 0.1 }}
-                      className="flex items-start gap-3 text-gray-300"
-                    >
-                      <span className="text-blue-400 mt-1.5">▹</span>
-                      <span>{responsibility}</span>
-                    </motion.li>
-                  ))}
-                </ul>
-              </div>
-            </motion.div>
-          ))}
+          <ol className="divide-y divide-line border-y border-line">
+            {experience.responsibilities.map((item, index) => (
+              <li key={item}>
+                <Reveal delay={index * 0.04} className="flex gap-5 py-5">
+                  <span aria-hidden="true" className="mt-0.5 font-mono text-xs text-brass">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <span className="leading-relaxed text-paper/90">{item}</span>
+                </Reveal>
+              </li>
+            ))}
+          </ol>
         </div>
+
+        <Reveal className="card mt-14 p-5 sm:p-8">
+          <h3 className="font-display text-xl font-medium">Project timeline</h3>
+          <p className="mt-1 text-sm text-muted">Dated projects from my resume, oldest at the bottom.</p>
+          <ProjectTimeline rows={rows} ticks={ticks} />
+        </Reveal>
       </div>
     </section>
   );
 }
-

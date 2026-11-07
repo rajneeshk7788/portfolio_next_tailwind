@@ -1,107 +1,145 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
-
-const navItems = [
-  { name: 'Home', href: '#home' },
-  { name: 'About', href: '#about' },
-  { name: 'Skills', href: '#skills' },
-  { name: 'Experience', href: '#experience' },
-  { name: 'Projects', href: '#projects' },
-  { name: 'Education', href: '#education' },
-  { name: 'Contact', href: '#contact' },
-];
+import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Download, Menu, X } from 'lucide-react';
+import { navItems, profile } from '@/lib/content';
 
 export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeId, setActiveId] = useState('');
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
+    const handleScroll = () => setIsScrolled(window.scrollY > 24);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Highlight whichever section crosses the middle of the viewport.
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActiveId(entry.target.id);
+        });
+      },
+      { rootMargin: '-45% 0px -50% 0px' }
+    );
+    ['home', ...navItems.map((item) => item.id)].forEach((id) => {
+      const section = document.getElementById(id);
+      if (section) observer.observe(section);
+    });
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsMenuOpen(false);
+    };
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) setIsMenuOpen(false);
+    };
+    window.addEventListener('keydown', handleKey);
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('keydown', handleKey);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [isMenuOpen]);
+
+  const isSolid = isScrolled || isMenuOpen;
+
   return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-black/80 backdrop-blur-md shadow-lg'
-          : 'bg-transparent'
+    <header
+      className={`fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300 ${
+        isSolid ? 'border-line bg-ink/90 backdrop-blur-md' : 'border-transparent'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <motion.a
-            href="#home"
-            className="text-1xl font-bold bg-gradient-to-r from-blue-400 to-purple-600 w-8 h-8 flex items-center justify-center rounded-full border-2 border-blue-400 bg-clip-text text-transparent"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            animate={{ rotate: 360 }}
-            transition={{ repeat: Infinity, duration: 8, ease: "linear" }}
+      <nav aria-label="Primary" className="wrap flex h-16 items-center justify-between gap-4">
+        <a href="#home" className="flex items-center gap-3" aria-label={`${profile.name}, back to top`}>
+          <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-brass/50 font-display text-sm font-semibold text-brass">
+            {profile.initials}
+          </span>
+          <span className="hidden font-display font-medium sm:inline lg:hidden xl:inline">
+            {profile.name}
+          </span>
+        </a>
 
-          >
-            RK
-          </motion.a>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex space-x-8">
-            {navItems.map((item) => (
-              <motion.a
-                key={item.name}
-                href={item.href}
-                className="text-gray-300 hover:text-white transition-colors relative group"
-                whileHover={{ y: -2 }}
-              >
-                {item.name}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-600 group-hover:w-full transition-all duration-300" />
-              </motion.a>
-            ))}
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden text-gray-300 hover:text-white"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-black/95 backdrop-blur-md"
-          >
-            <div className="px-4 pt-2 pb-4 space-y-2">
-              {navItems.map((item) => (
-                <motion.a
-                  key={item.name}
-                  href={item.href}
-                  className="block py-2 text-gray-300 hover:text-white transition-colors"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  whileHover={{ x: 10 }}
+        <ul className="hidden items-center gap-1 lg:flex">
+          {navItems.map((item) => {
+            const isActive = activeId === item.id;
+            return (
+              <li key={item.id}>
+                <a
+                  href={`#${item.id}`}
+                  aria-current={isActive ? 'true' : undefined}
+                  className={`rounded-md px-3 py-2 text-sm transition-colors duration-200 ${
+                    isActive ? 'text-brass' : 'text-muted hover:text-paper'
+                  }`}
                 >
                   {item.name}
-                </motion.a>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+
+        <div className="flex items-center gap-2">
+          <a
+            href={profile.resumeUrl}
+            download={profile.resumeFileName}
+            className="btn-secondary !min-h-10 !px-3.5 !py-2"
+          >
+            <Download size={16} aria-hidden="true" />
+            Resume
+          </a>
+          <button
+            type="button"
+            className="icon-link !h-10 !w-10 lg:hidden"
+            aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-menu"
+            onClick={() => setIsMenuOpen((open) => !open)}
+          >
+            {isMenuOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
+          </button>
+        </div>
+      </nav>
+
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            id="mobile-menu"
+            // Don't animate height here: measuring `height: auto` makes Framer Motion
+            // reset the window scroll, which cancels the anchor jump from a menu link.
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+            className="lg:hidden"
+          >
+            <ul className="wrap pb-4 pt-1">
+              {navItems.map((item) => (
+                <li key={item.id}>
+                  <a
+                    href={`#${item.id}`}
+                    aria-current={activeId === item.id ? 'true' : undefined}
+                    className={`block border-t border-line py-3 text-base ${
+                      activeId === item.id ? 'text-brass' : 'text-paper'
+                    }`}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.name}
+                  </a>
+                </li>
               ))}
-            </div>
+            </ul>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.nav>
+    </header>
   );
 }
-

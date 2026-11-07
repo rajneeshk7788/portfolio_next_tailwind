@@ -1,176 +1,142 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Github, Linkedin, Mail, Phone } from 'lucide-react';
+import { ArrowRight, Download, Github, Linkedin, Mail } from 'lucide-react';
+import { profile, snapshot } from '@/lib/content';
+
+const ease = [0.22, 1, 0.36, 1] as const;
+
+const container = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.09, delayChildren: 0.1 } },
+};
+
+const item = {
+  hidden: { opacity: 0, y: 18 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease } },
+};
+
+const TRACE =
+  'M0 92 C24 88 36 58 60 60 S96 96 124 84 S160 30 188 36 S226 80 252 62 S290 18 320 22';
 
 export default function Hero() {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-  };
-
   return (
-    <section
-      id="home"
-      className="min-h-screen flex items-center justify-center relative overflow-hidden"
-    >
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-1/2 left-1 -translate-x-1 -translate-y-1 w-[200%] h-[200%] opacity-[0.05]"
-          style={{
-            background: "repeating-conic-gradient(from 0deg at 50% 10%, transparent 0deg 10deg, white 10deg 20deg)",
-          }}
-          animate={{ rotate: 180 }}
-          transition={{
-            duration: 80,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-        />
-      </div>
+    <section id="home" className="relative flex min-h-[100svh] items-center overflow-hidden pb-16 pt-28 lg:pt-24">
+      <div aria-hidden="true" className="hero-grid pointer-events-none absolute inset-0" />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-40 -top-40 h-[32rem] w-[32rem] rounded-full bg-brass/10 blur-[120px]"
+      />
 
-      <div className="absolute inset-0 overflow-hidden">
-        <motion.div
-          className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20"
-          animate={{
-            x: [0, 30, -20, 0],
-            y: [0, -50, 20, 0],
-            scale: [1, 1.1, 0.9, 1],
-          }}
-          transition={{
-            duration: 7,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-        <motion.div
-          className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20"
-          animate={{
-            x: [0, 30, -20, 0],
-            y: [0, -50, 20, 0],
-            scale: [1, 1.1, 0.9, 1],
-          }}
-          transition={{
-            duration: 7,
-            repeat: Infinity,
-            delay: 2,
-            ease: "easeInOut",
-          }}
-        />
-        <motion.div
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20"
-          animate={{
-            x: [0, 30, -20, 0],
-            y: [0, -50, 20, 0],
-            scale: [1, 1.1, 0.9, 1],
-          }}
-          transition={{
-            duration: 7,
-            repeat: Infinity,
-            delay: 4,
-            ease: "easeInOut",
-          }}
-        />
-      </div>
-
-      <motion.div
-        className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        <motion.h1
-          variants={itemVariants}
-          className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6"
-        >
-          <span className="block">Hi, I'm</span>
-          <span className="block bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-            Rajneesh Kushwaha
-          </span>
-        </motion.h1>
-
-        <motion.p
-          variants={itemVariants}
-          className="text-xl sm:text-2xl lg:text-3xl text-gray-400 mb-4"
-        >
-          Front End Developer
-        </motion.p>
-
-        <motion.p
-          variants={itemVariants}
-          className="text-base sm:text-lg text-gray-500 mb-12 max-w-2xl mx-auto"
-        >
-          Building responsive, user-friendly applications with a focus on
-          performance and design. Passionate about creating dynamic user
-          interfaces and delivering high-quality solutions.
-        </motion.p>
-
-        <motion.div
-          variants={itemVariants}
-          className="flex flex-wrap justify-center gap-6"
-        >
-          <motion.a
-            href="https://github.com/rajneeshk7788"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 px-6 py-3 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+      <div className="wrap relative grid items-center gap-12 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:gap-16">
+        <motion.div variants={container} initial="hidden" animate="visible">
+          <motion.p
+            variants={item}
+            className="mb-5 font-mono text-xs uppercase tracking-[0.2em] text-brass sm:text-sm"
           >
-            <Github size={20} />
-            <span>GitHub</span>
-          </motion.a>
-
-          <motion.a
-            href="https://linkedin.com/in/rajneesh12"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 px-6 py-3 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            {profile.role}
+          </motion.p>
+          <motion.h1
+            variants={item}
+            className="text-balance font-display text-5xl font-semibold leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl"
           >
-            <Linkedin size={20} />
-            <span>LinkedIn</span>
-          </motion.a>
+            {profile.name}
+          </motion.h1>
+          <motion.p variants={item} className="mt-6 max-w-xl text-lg leading-relaxed text-muted">
+            {profile.intro}
+          </motion.p>
 
-          <motion.a
-            href="mailto:rajneeshkush780@gmail.com"
-            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 rounded-lg transition-all"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Mail size={20} />
-            <span>Get in Touch</span>
-          </motion.a>
+          <motion.div variants={item} className="mt-9 flex flex-wrap items-center gap-3">
+            <a href="#projects" className="btn-primary group">
+              View projects
+              <ArrowRight
+                size={16}
+                aria-hidden="true"
+                className="transition-transform duration-200 group-hover:translate-x-0.5"
+              />
+            </a>
+            <a href={profile.resumeUrl} download={profile.resumeFileName} className="btn-secondary">
+              <Download size={16} aria-hidden="true" />
+              Download resume
+            </a>
+          </motion.div>
+
+          <motion.div variants={item} className="mt-4 flex gap-2">
+            <a
+              href={profile.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub profile"
+              className="icon-link"
+            >
+              <Github size={18} aria-hidden="true" />
+            </a>
+            <a
+              href={profile.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn profile"
+              className="icon-link"
+            >
+              <Linkedin size={18} aria-hidden="true" />
+            </a>
+            <a href={`mailto:${profile.email}`} aria-label="Send an email" className="icon-link">
+              <Mail size={18} aria-hidden="true" />
+            </a>
+          </motion.div>
         </motion.div>
 
-        <motion.div
-          variants={itemVariants}
-          className="mt-16"
+        <motion.aside
+          aria-label="Profile snapshot"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.35, ease }}
+          className="card overflow-hidden shadow-2xl shadow-black/40"
         >
-          <motion.a
-            href="#about"
-            className="inline-block"
-            animate={{ y: [0, 10, 0] }}
-            transition={{ repeat: Infinity, duration: 2 }}
-          >
-            <div className="w-6 h-10 border-2 border-gray-600 rounded-full flex justify-center">
-              <div className="w-1 h-3 bg-gray-600 rounded-full mt-2" />
-            </div>
-          </motion.a>
-        </motion.div>
-      </motion.div>
+          <div className="flex items-center justify-between border-b border-line px-5 py-3">
+            <span className="font-mono text-xs text-muted">profile.snapshot</span>
+            <span className="h-2 w-2 rounded-full bg-sage" aria-hidden="true" />
+          </div>
+
+          <svg aria-hidden="true" viewBox="0 0 320 110" className="block w-full" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="hero-area" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0" stopColor="#E8B563" stopOpacity="0.22" />
+                <stop offset="1" stopColor="#E8B563" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            {[28, 55, 82].map((y) => (
+              <line key={y} x1="0" x2="320" y1={y} y2={y} stroke="rgba(236,233,226,0.07)" />
+            ))}
+            <motion.path
+              d={`${TRACE} V110 H0 Z`}
+              fill="url(#hero-area)"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 1.5 }}
+            />
+            <motion.path
+              d={TRACE}
+              fill="none"
+              stroke="#E8B563"
+              strokeWidth="2"
+              vectorEffect="non-scaling-stroke"
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: 1 }}
+              transition={{ duration: 1.8, delay: 0.5, ease: 'easeInOut' }}
+            />
+          </svg>
+
+          <dl className="divide-y divide-line border-t border-line">
+            {snapshot.map((row) => (
+              <div key={row.label} className="grid grid-cols-[6rem_1fr] gap-3 px-5 py-3.5">
+                <dt className="font-mono text-xs leading-5 text-muted">{row.label}</dt>
+                <dd className="text-sm leading-5">{row.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </motion.aside>
+      </div>
     </section>
   );
 }
-
